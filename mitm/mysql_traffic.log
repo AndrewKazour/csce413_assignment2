@@ -1,0 +1,385 @@
+
+============================================================
+MySQL Packet Capture Started: 2026-02-07 17:05:17
+============================================================
+
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45062 -> To: 172.20.0.11:3306
+No payload
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45062
+No payload
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45062 -> To: 172.20.0.11:3306
+No payload
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45062
+Payload length: 78 bytes
+Data:
+J...
+8.0.45....V.h.[vbt...............].8Q,.-....caching_sha2_password.
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45062 -> To: 172.20.0.11:3306
+No payload
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45062 -> To: 172.20.0.11:3306
+Payload length: 154 bytes
+Data:
+...:..-.......................root. .(.1.'*Q.!b^..Auserdb.caching_sha2_password.2._client_name.pymysql._client_version.1.1.0._pid.7
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45062
+No payload
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45062
+Payload length: 6 bytes
+Data:
+......
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45062
+Payload length: 11 bytes
+Data:
+...........
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45062 -> To: 172.20.0.11:3306
+No payload
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45062 -> To: 172.20.0.11:3306
+Payload length: 22 bytes
+Data:
+.....SET NAMES utf8mb4
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45062
+Payload length: 11 bytes
+Data:
+...........
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45062 -> To: 172.20.0.11:3306
+Payload length: 23 bytes
+Data:
+.....SET AUTOCOMMIT = 0
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45062
+Payload length: 11 bytes
+Data:
+...........
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45062 -> To: 172.20.0.11:3306
+Payload length: 60 bytes
+Data:
+8....SELECT id, username, email, role FROM users ORDER BY id
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45062
+Payload length: 406 bytes
+Data:
+.....*....def.userdb.users.users.id.id.?.......B...6....def.userdb.users.users.username.username......P...0....def.userdb.users.users.email.email...............def.userdb.users.users.role.role..P................ ....1.alice.alice@example.com.admin.....2.bob.bob@example.com.user(..	.3.charlie.charlie@example.com	developer...
+.4.diana.diana@example.com.user.....5.eve.eve@example.com.user........
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45062 -> To: 172.20.0.11:3306
+Payload length: 5 bytes
+Data:
+.....
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45062 -> To: 172.20.0.11:3306
+No payload
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45062
+No payload
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45062 -> To: 172.20.0.11:3306
+No payload
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45062
+No payload
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45074 -> To: 172.20.0.11:3306
+No payload
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45074
+No payload
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45074 -> To: 172.20.0.11:3306
+No payload
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45074
+Payload length: 78 bytes
+Data:
+J...
+8.0.45....\.	^DqS_..............DFZ:}MAx!&.}.caching_sha2_password.
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45074 -> To: 172.20.0.11:3306
+No payload
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45074 -> To: 172.20.0.11:3306
+Payload length: 154 bytes
+Data:
+...:..-.......................root. k#j.%..z.'..Y.ܳ
+]userdb.caching_sha2_password.2._client_name.pymysql._client_version.1.1.0._pid.7
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45074
+No payload
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45074
+Payload length: 6 bytes
+Data:
+......
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45074
+Payload length: 11 bytes
+Data:
+...........
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45074 -> To: 172.20.0.11:3306
+No payload
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45074 -> To: 172.20.0.11:3306
+Payload length: 22 bytes
+Data:
+.....SET NAMES utf8mb4
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45074
+Payload length: 11 bytes
+Data:
+...........
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45074 -> To: 172.20.0.11:3306
+Payload length: 23 bytes
+Data:
+.....SET AUTOCOMMIT = 0
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45074
+Payload length: 11 bytes
+Data:
+...........
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45074 -> To: 172.20.0.11:3306
+Payload length: 128 bytes
+Data:
+|....
+            SELECT id, secret_name, secret_value, description 
+            FROM secrets 
+            WHERE id = 1
+        
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45074
+Payload length: 408 bytes
+Data:
+..........def.userdb.secrets.secrets.id.id.?.......B...@....def.userdb.secrets.secrets.secret_name.secret_name..........B....def.userdb.secrets.secrets.secret_value.secret_value.........@....def.userdb.secrets.secrets.description.description.................}....1	api_token#FLAG{n3tw0rk_tr4ff1c_1s_n0t_s3cur3}LAPI authentication token for secret services - MITM attack will reveal this!........
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45074 -> To: 172.20.0.11:3306
+Payload length: 5 bytes
+Data:
+.....
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45074 -> To: 172.20.0.11:3306
+No payload
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45074
+No payload
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45074 -> To: 172.20.0.11:3306
+No payload
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45080 -> To: 172.20.0.11:3306
+No payload
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45080
+No payload
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45080 -> To: 172.20.0.11:3306
+No payload
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45080
+Payload length: 78 bytes
+Data:
+J...
+8.0.45....jv?^&PN'..............T.7i`.:vT.Nd.caching_sha2_password.
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45080 -> To: 172.20.0.11:3306
+No payload
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45080 -> To: 172.20.0.11:3306
+Payload length: 154 bytes
+Data:
+...:..-.......................root. ۅ..K.[...._x.,+1פ}~guserdb.caching_sha2_password.2._client_name.pymysql._client_version.1.1.0._pid.7
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45080
+No payload
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45080
+Payload length: 6 bytes
+Data:
+......
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45080
+Payload length: 11 bytes
+Data:
+...........
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45080 -> To: 172.20.0.11:3306
+No payload
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45080 -> To: 172.20.0.11:3306
+Payload length: 22 bytes
+Data:
+.....SET NAMES utf8mb4
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45080
+Payload length: 11 bytes
+Data:
+...........
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45080 -> To: 172.20.0.11:3306
+Payload length: 23 bytes
+Data:
+.....SET AUTOCOMMIT = 0
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45080
+Payload length: 11 bytes
+Data:
+...........
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45080 -> To: 172.20.0.11:3306
+Payload length: 13 bytes
+Data:
+	....SELECT 1
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45080
+Payload length: 56 bytes
+Data:
+..........def....1..?.......................1........
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45080 -> To: 172.20.0.11:3306
+Payload length: 5 bytes
+Data:
+.....
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45080 -> To: 172.20.0.11:3306
+No payload
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.11:3306 -> To: 172.20.0.10:45080
+No payload
+
+============================================================
+MySQL Traffic Detected:
+From: 172.20.0.10:45080 -> To: 172.20.0.11:3306
+No payload
