@@ -4,39 +4,100 @@
 import argparse
 import socket
 import time
+import logging
 
-DEFAULT_KNOCK_SEQUENCE = [1234, 5678, 9012]
+DEFAULT_KNOCK_SEQUENCE = [3474, 5678, 9012]
 DEFAULT_PROTECTED_PORT = 2222
 DEFAULT_DELAY = 0.3
+
+def setup_logging(verbose=False):
+    level = logging.DEBUG if verbose else logging.INFO
+    logging.basicConfig(
+        level=level,
+        format="%(asctime)s - %(levelname)s - %(message)s",
+        handlers=[logging.StreamHandler()],
+    )
+
 
 
 def send_knock(target, port, delay):
     """Send a single knock to the target port."""
-    # TODO: Choose UDP or TCP knocks based on your design.
-    # Example TCP knock stub:
+    logger = logging.getLogger("KnockClient")
+    
     try:
-        with socket.create_connection((target, port), timeout=1.0):
-            pass
-    except OSError:
-        pass
-    time.sleep(delay)
+        #UDP socket
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.settimeout(2.0)
+        
+        # Send a simple knock message
+        message = b"KNOCK"
+        sock.sendto(message, (target, port))
+        
+        logger.info(f"→ Knocked on port {port}")
+        
+        sock.close()
+        time.sleep(delay)
+        return True
+        
+    except socket.error as e:
+        logger.error(f"Failed to knock on port {port}: {e}")
+        return False
 
 
 def perform_knock_sequence(target, sequence, delay):
     """Send the full knock sequence."""
-    for port in sequence:
-        send_knock(target, port, delay)
+    logger = logging.getLogger("KnockClient")
+    
+    logger.info("="*60)
+    logger.info("Port Knocking Client")
+    logger.info("="*60)
+    logger.info(f"Target: {target}")
+    logger.info(f"Sequence: {sequence}")
+    logger.info(f"Knock delay: {delay}s")
+    logger.info("="*60)
+    logger.info("Sending knock sequence...")
+    
+    success = True
+    for i, port in enumerate(sequence, 1):
+        logger.info(f"Knock {i}/{len(sequence)}: Port {port}")
+        if not send_knock(target, port, delay):
+            success = False
+            break
+    
+    if success:
+        logger.info("="*60)
+        logger.info("✓ Knock sequence completed successfully!")
+        logger.info("="*60)
+    else:
+        logger.error("✗ Failed to complete knock sequence")
+    
+    return success
 
 
 def check_protected_port(target, protected_port):
     """Try connecting to the protected port after knocking."""
-    # TODO: Replace with real service connection if needed.
+    """Try connecting to the protected port after knocking."""
+    logger = logging.getLogger("KnockClient")
+    
+    logger.info(f"\nTesting protected port {protected_port}...")
+    
     try:
-        with socket.create_connection((target, protected_port), timeout=2.0):
-            print(f"[+] Connected to protected port {protected_port}")
-    except OSError:
-        print(f"[-] Could not connect to protected port {protected_port}")
-
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(5)
+        
+        result = sock.connect_ex((target, protected_port))
+        sock.close()
+        
+        if result == 0:
+            logger.info(f"✓ Port {protected_port} is OPEN!")
+            return True
+        else:
+            logger.warning(f"✗ Port {protected_port} is still CLOSED")
+            return False
+            
+    except socket.error as e:
+        logger.error(f"Error testing port: {e}")
+        return False
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Port knocking client starter")
@@ -68,6 +129,8 @@ def parse_args():
 
 def main():
     args = parse_args()
+    setup_logging()  
+    
     try:
         sequence = [int(port) for port in args.sequence.split(",")]
     except ValueError:
@@ -76,6 +139,7 @@ def main():
     perform_knock_sequence(args.target, sequence, args.delay)
 
     if args.check:
+        time.sleep(1) 
         check_protected_port(args.target, args.protected_port)
 
 
