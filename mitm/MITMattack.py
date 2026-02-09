@@ -46,8 +46,8 @@ log_and_print(f"MySQL Packet Capture Started: {datetime.now().strftime('%Y-%m-%d
 log_and_print(f"{'='*60}\n")
 
 try:
-    # Sniff on the Docker bridge interface
-    sniff(iface="br-bbf4b17196a4", filter="tcp port 3306", prn=packet_handler, store=False)
+    # Sniff on the Docker bridge interface (CHANGE EVERYTIME SERVICE IS UP)
+    sniff(iface="br-dce3166cb3c8", filter="tcp port 3306", prn=packet_handler, store=False)
 except KeyboardInterrupt:
     log_and_print(f"\n{'='*60}")
     log_and_print(f"Packet Capture Stopped: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")

@@ -7,7 +7,7 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from datetime import datetime
 import json
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlparse, parse_qs, unquote_plus
 import threading
 from logger import create_logger, parse_auth_from_data
 
@@ -50,45 +50,57 @@ class HoneypotHTTPHandler(BaseHTTPRequestHandler):
             # Add new attack
             attacks.append(attack_data)
             
-            # Save back
+        
             with open(ATTACK_LOG_PATH, 'w') as f:
                 json.dump(attacks, indent=2, fp=f)
         except Exception as e:
             logging.error(f"Failed to log attack to JSON: {e}")
     
-    def analyze_request(self, method, path, headers, body=None):
+    def analyze_request(self, method, path, headers, body=None, query_params=None):
         """Analyze if request looks like an attack."""
         suspicious = False
-        attack_type = "normal"
-        
+        attack_types = []
+
+        decoded_path = unquote_plus(path or "")
+        decoded_body = unquote_plus(body or "")
+        decoded_query = ""
+        if query_params:
+            decoded_query = unquote_plus(json.dumps(query_params))
+
+        combined_payload = " ".join([decoded_path, decoded_body, decoded_query])
+        combined_lower = combined_payload.lower()
+
         # Check for SQL injection
-        sql_keywords = ['SELECT', 'UNION', 'DROP', 'INSERT', '--', 'OR 1=1', "' OR '"]
-        if any(keyword.lower() in path.lower() for keyword in sql_keywords):
+        sql_keywords = ['select', 'union', 'drop', 'insert', '--', 'or 1=1', "' or '"]
+        if any(keyword in combined_lower for keyword in sql_keywords):
             suspicious = True
-            attack_type = "SQL Injection"
-        
+            attack_types.append("SQL Injection")
+
         # Check for path traversal
-        if '../' in path or '..\\' in path:
+        if '../' in combined_lower or '..\\' in combined_lower:
             suspicious = True
-            attack_type = "Path Traversal"
-        
+            attack_types.append("Path Traversal")
+
         # Check for XSS
         xss_patterns = ['<script>', 'javascript:', 'onerror=', 'onload=']
-        if any(pattern.lower() in path.lower() for pattern in xss_patterns):
+        if any(pattern in combined_lower for pattern in xss_patterns):
             suspicious = True
-            attack_type = "XSS Attempt"
-        
+            attack_types.append("XSS Attempt")
+
         # Check for known vulnerable paths
-        if any(vuln_path in path for vuln_path in self.VULNERABLE_PATHS):
+        if any(vuln_path in decoded_path for vuln_path in self.VULNERABLE_PATHS):
             suspicious = True
-            attack_type = "Scanning for vulnerabilities"
-        
+            attack_types.append("Scanning for vulnerabilities")
+
         # Check for credential stuffing
-        if body and ('password' in body.lower() or 'username' in body.lower()):
+        if 'password' in combined_lower or 'username' in combined_lower:
             suspicious = True
-            attack_type = "Credential attempt"
-        
-        return suspicious, attack_type
+            attack_types.append("Credential attempt")
+
+        if not attack_types:
+            return False, "normal"
+
+        return suspicious, "; ".join(attack_types)
     
     def do_GET(self):
         """Handle GET requests."""
@@ -116,23 +128,18 @@ class HoneypotHTTPHandler(BaseHTTPRequestHandler):
         headers = dict(self.headers)
         timestamp = datetime.now().isoformat()
         
-        # Create unique connection ID
         connection_id = f"{client_ip}:{client_port}:{timestamp}"
         
-        # Start connection logging
         connection_logger.start_connection(connection_id, client_ip, client_port)
-        
-        # Parse query parameters
+    
         parsed_url = urlparse(path)
         query_params = parse_qs(parsed_url.query)
+
+        suspicious, attack_type = self.analyze_request(method, path, headers, body, query_params)
         
-        # Analyze for attacks
-        suspicious, attack_type = self.analyze_request(method, path, headers, body)
-        
-        # Log the command/request
+
         connection_logger.log_command(connection_id, f"{method} {path}")
-        
-        # Log request data if present
+       
         if body:
             connection_logger.log_data(connection_id, body, "POST body")
             
@@ -203,21 +210,174 @@ class HoneypotHTTPHandler(BaseHTTPRequestHandler):
         """Send convincing responses based on requested path."""
         
         if path == '/' or path == '/index.html':
-            # Simulate a login page
+            # Simulate a fictional bank login page
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
             response = """
             <!DOCTYPE html>
-            <html>
-            <head><title>Admin Login</title></head>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Cedar Valley Bank | Secure Sign On</title>
+                <style>
+                    :root {
+                        --ink: #1b1b1d;
+                        --paper: #f7f2ea;
+                        --clay: #c55a3a;
+                        --bronze: #8e5d3b;
+                        --pine: #500000;
+                        --mist: #e7e1d7;
+                    }
+                    * { box-sizing: border-box; }
+                    body {
+                        margin: 0;
+                        font-family: "Garamond", "Palatino Linotype", "Book Antiqua", serif;
+                        color: var(--ink);
+                        background: radial-gradient(1200px 600px at 10% -10%, #500000 0%, var(--paper) 40%, #efe7dd 100%);
+                        min-height: 100vh;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 32px 16px;
+                    }
+                    .frame {
+                        width: min(960px, 96vw);
+                        display: grid;
+                        grid-template-columns: 1.2fr 0.8fr;
+                        gap: 24px;
+                        background: #fff;
+                        border: 1px solid var(--mist);
+                        border-radius: 18px;
+                        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+                        overflow: hidden;
+                        animation: float-in 700ms ease-out;
+                    }
+                    .brand {
+                        background: linear-gradient(135deg, var(--pine), #3d5f52 55%, #4b6a5a 100%);
+                        color: #f4efe8;
+                        padding: 36px 32px;
+                        position: relative;
+                    }
+                    .brand:before {
+                        content: "";
+                        position: absolute;
+                        right: -40px;
+                        top: 30px;
+                        width: 160px;
+                        height: 160px;
+                        border-radius: 50%;
+                        background: rgba(255, 255, 255, 0.08);
+                    }
+                    .brand h1 {
+                        margin: 0 0 8px 0;
+                        font-size: 32px;
+                        letter-spacing: 0.5px;
+                    }
+                    .brand p {
+                        margin: 0 0 16px 0;
+                        font-size: 16px;
+                        line-height: 1.5;
+                        color: #e8e1d7;
+                    }
+                    .brand .badge {
+                        display: inline-block;
+                        padding: 6px 10px;
+                        border: 1px solid rgba(255, 255, 255, 0.3);
+                        border-radius: 999px;
+                        font-size: 12px;
+                        text-transform: uppercase;
+                        letter-spacing: 1px;
+                    }
+                    .panel {
+                        padding: 32px 32px 36px;
+                    }
+                    .panel h2 {
+                        margin: 0 0 6px 0;
+                        font-size: 24px;
+                    }
+                    .panel small {
+                        color: #6b6256;
+                    }
+                    form {
+                        margin-top: 18px;
+                        display: grid;
+                        gap: 14px;
+                    }
+                    label {
+                        font-size: 13px;
+                        letter-spacing: 0.4px;
+                        text-transform: uppercase;
+                        color: #6a5a4d;
+                    }
+                    input {
+                        width: 100%;
+                        padding: 12px 14px;
+                        border: 1px solid var(--mist);
+                        border-radius: 10px;
+                        font-size: 16px;
+                        background: #fffdf9;
+                    }
+                    button {
+                        margin-top: 8px;
+                        padding: 12px 14px;
+                        border: none;
+                        border-radius: 12px;
+                        background: linear-gradient(135deg, var(--clay), var(--bronze));
+                        color: #fff7ef;
+                        font-size: 16px;
+                        letter-spacing: 0.6px;
+                        cursor: pointer;
+                    }
+                    .assist {
+                        margin-top: 16px;
+                        font-size: 14px;
+                        color: #6b6256;
+                        display: flex;
+                        justify-content: space-between;
+                        flex-wrap: wrap;
+                        gap: 8px;
+                    }
+                    .assist span { text-decoration: underline; }
+                    @keyframes float-in {
+                        from { opacity: 0; transform: translateY(16px); }
+                        to { opacity: 1; transform: translateY(0); }
+                    }
+                    @media (max-width: 820px) {
+                        .frame { grid-template-columns: 1fr; }
+                    }
+                </style>
+            </head>
             <body>
-                <h1>Corporate Admin Panel</h1>
-                <form action="/login" method="POST">
-                    <input type="text" name="username" placeholder="Username"><br>
-                    <input type="password" name="password" placeholder="Password"><br>
-                    <button type="submit">Login</button>
-                </form>
+                <div class="frame">
+                    <section class="brand">
+                        <span class="badge">Demo Bank</span>
+                        <h1>A&M Bank</h1>
+                        <p>Secure sign-on for personal and small business banking. Monitor accounts, pay bills, and manage alerts from one place.</p>
+                        <p>Need help? Call 1-800-555-0199.</p>
+                    </section>
+                    <section class="panel">
+                        <h2>Sign on</h2>
+                        <small>Enter your online ID and password to continue.</small>
+                        <form action="/login" method="POST">
+                            <div>
+                                <label for="username">Online ID</label>
+                                <input id="username" type="text" name="username" placeholder="Your online ID" autocomplete="username">
+                            </div>
+                            <div>
+                                <label for="password">Password</label>
+                                <input id="password" type="password" name="password" placeholder="Your password" autocomplete="current-password">
+                            </div>
+                            <button type="submit">Sign on securely</button>
+                        </form>
+                        <div class="assist">
+                            <span>Forgot Online ID?</span>
+                            <span>Enroll</span>
+                            <span>Privacy & Security</span>
+                        </div>
+                    </section>
+                </div>
             </body>
             </html>
             """
@@ -240,7 +400,6 @@ class HoneypotHTTPHandler(BaseHTTPRequestHandler):
             self.wfile.write(response.encode())
         
         elif '/.env' in path or '/config' in path:
-            # Simulate config file (but actually empty/fake)
             self.send_response(200)
             self.send_header('Content-type', 'text/plain')
             self.end_headers()
@@ -248,7 +407,6 @@ class HoneypotHTTPHandler(BaseHTTPRequestHandler):
             self.wfile.write(response.encode())
         
         else:
-            # Defa  ult 404
             self.send_response(404)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
@@ -257,7 +415,6 @@ class HoneypotHTTPHandler(BaseHTTPRequestHandler):
     
     def log_message(self, format, *args):
         """Override to prevent default HTTP server logging."""
-        # We handle our own logging
         pass
 
 
