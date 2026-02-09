@@ -1,7 +1,8 @@
 # Honeypot Analysis
 
 ## Summary of Observed Attacks
-
+The HTTPS honeypot recorded several simulated attacks targeting the exposed web service. The majority of activity involved automated HTTP requests attempting to access sensitive or common paths such as /login, /admin, and /wp-admin. Additional test attacks included malformed requests and parameter manipulation to mimic SQL injection and directory traversal attempts. Some connections focused solely on identifying the server and supported methods, indicating reconnaissance rather than exploitation.
 ## Notable Patterns
-
+A recurring pattern in the logs was repeated login attempts occurring in rapid succession, suggesting the use of brute-force tools. Many attempts followed identical username and password combinations, reinforcing the likelihood of automation. Certain source IP addresses attempted multiple connections across short time periods, while others appeared only once, consistent with distributed scanning behavior. The focus on default credentials shows attackers prioritizing low-effort access attempts.
 ## Recommendations
+To mitigate the types of attacks observed, some type of timed lock out system should be used. Rate limiting and tools such as Fail2Ban can help block repeated failed login attempts from the same source. Monitoring and log analysis should be continued to detect attack trends and recurring sources. Deploying the honeypot in an isolated environment remains important for safely observing attacker behavior without exposing real systems.
