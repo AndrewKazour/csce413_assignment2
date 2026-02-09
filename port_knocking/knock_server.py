@@ -66,6 +66,27 @@ def close_protected_port(protected_port, source_ip):
         logging.info(f"[DEMO] Would close port {protected_port} for {source_ip}")
         return True
 
+def create_protected_service(port):
+    """Create a simple TCP listener on the protected port."""
+    logger = logging.getLogger(f"ProtectedService-{port}")
+    
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    sock.bind(('0.0.0.0', port))
+    sock.listen(5)
+    
+    logger.info(f"Protected service listening on TCP port {port}")
+    
+    while True:
+        try:
+            client, addr = sock.accept()
+            logger.info(f"Connection from {addr[0]}:{addr[1]} on protected port {port}")
+            client.send(b"Welcome! You have successfully accessed the protected service.\n")
+            client.close()
+        except Exception as e:
+            logger.error(f"Error on protected service: {e}")
+
+
 def create_listener(port, tracker):
     """Create a UDP listener for a specific knock port."""
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -122,11 +143,11 @@ def listen_for_knocks(sequence, window_seconds, protected_port):
             if port == expected_port:
                 state["knocks"].append(port)
                 state["index"] += 1
-                logging.info(f"✓ Valid knock {state['index']}/{len(self.correct_sequence)} from {source_ip} on port {port}")
+                logging.info(f"Valid knock {state['index']}/{len(self.correct_sequence)} from {source_ip} on port {port}")
                 
                 # Check if sequence is complete
                 if state["index"] == len(self.correct_sequence):
-                    logging.info(f"🎉 CORRECT SEQUENCE from {source_ip}!")
+                    logging.info(f"Correct sequence from {source_ip}!")
                     open_protected_port(self.protected_port, source_ip)
                     self.authorized_ips.add(source_ip)
                     self.reset_progress(source_ip)
@@ -162,6 +183,10 @@ def listen_for_knocks(sequence, window_seconds, protected_port):
     
     # Create tracker
     tracker = KnockTracker(sequence, window_seconds, protected_port)
+    
+    # Start the protected service listener
+    protected_thread = Thread(target=create_protected_service, args=(protected_port,), daemon=True)
+    protected_thread.start()
     
     # Create a UDP listener thread for each knock port
     threads = []

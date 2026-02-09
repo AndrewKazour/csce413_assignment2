@@ -76,7 +76,6 @@ def perform_knock_sequence(target, sequence, delay):
 
 def check_protected_port(target, protected_port):
     """Try connecting to the protected port after knocking."""
-    """Try connecting to the protected port after knocking."""
     logger = logging.getLogger("KnockClient")
     
     logger.info(f"\nTesting protected port {protected_port}...")
@@ -87,13 +86,7 @@ def check_protected_port(target, protected_port):
         
         result = sock.connect_ex((target, protected_port))
         sock.close()
-        
-        if result == 0:
-            logger.info(f"✓ Port {protected_port} is OPEN!")
-            return True
-        else:
-            logger.warning(f"✗ Port {protected_port} is still CLOSED")
-            return False
+
             
     except socket.error as e:
         logger.error(f"Error testing port: {e}")

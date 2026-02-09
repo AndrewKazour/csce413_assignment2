@@ -41,13 +41,21 @@ def packet_handler(packet):
         else:
             log_and_print("No payload")
 
+if len(sys.argv) < 2:
+    print("Usage: python MITMattack.py <interface>")
+    print("Example: python MITMattack.py br-dce3166cb3c8")
+    sys.exit(1)
+
+interface = sys.argv[1]
+
 log_and_print(f"\n{'='*60}")
 log_and_print(f"MySQL Packet Capture Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+log_and_print(f"Sniffing on interface: {interface}")
 log_and_print(f"{'='*60}\n")
 
 try:
-    # Sniff on the Docker bridge interface (CHANGE EVERYTIME SERVICE IS UP)
-    sniff(iface="br-dce3166cb3c8", filter="tcp port 3306", prn=packet_handler, store=False)
+    # Sniff on the Docker bridge interface
+    sniff(iface=interface, filter="tcp port 3306", prn=packet_handler, store=False)
 except KeyboardInterrupt:
     log_and_print(f"\n{'='*60}")
     log_and_print(f"Packet Capture Stopped: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")

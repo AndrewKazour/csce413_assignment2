@@ -11,15 +11,36 @@ from urllib.parse import urlparse, parse_qs, unquote_plus
 import threading
 from logger import create_logger, parse_auth_from_data
 
-LOG_PATH = "/app/logs/honeypot.log"
-ATTACK_LOG_PATH = "/app/logs/attacks.json"
+# Determine log directory 
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Create connection logger instance
-connection_logger = create_logger("/app/logs/connections.jsonl")
+def is_running_in_docker():
+    """Check if we're running inside a Docker container."""
+    # Check for .dockerenv file (most reliable)
+    if os.path.exists('/.dockerenv'):
+        return True
+    # Check cgroup (fallback)
+    try:
+        with open('/proc/1/cgroup', 'r') as f:
+            return 'docker' in f.read()
+    except:
+        return False
+
+if is_running_in_docker():
+    LOG_DIR = "/app/logs"
+else:
+    LOG_DIR = os.path.join(SCRIPT_DIR, "logs")
+
+os.makedirs(LOG_DIR, exist_ok=True)
+
+LOG_PATH = os.path.join(LOG_DIR, "honeypot.log")
+ATTACK_LOG_PATH = os.path.join(LOG_DIR, "attacks.json")
+
+connection_logger = create_logger(os.path.join(LOG_DIR, "connections.jsonl"))
 
 
 def setup_logging():
-    os.makedirs("/app/logs", exist_ok=True)
+    os.makedirs(LOG_DIR, exist_ok=True)
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s - %(levelname)s - %(message)s",
@@ -143,7 +164,7 @@ class HoneypotHTTPHandler(BaseHTTPRequestHandler):
         if body:
             connection_logger.log_data(connection_id, body, "POST body")
             
-            # Check for authentication attempts
+            # Authentication attempts
             username, password = parse_auth_from_data(body)
             if username or password:
                 connection_logger.log_auth_attempt(
@@ -175,7 +196,7 @@ class HoneypotHTTPHandler(BaseHTTPRequestHandler):
         if query_params:
             logger.info(f"Query Params: {dict(query_params)}")
         
-        # Create detailed attack record
+       
         attack_data = {
             "timestamp": timestamp,
             "source_ip": client_ip,

@@ -195,7 +195,7 @@ def parse_auth_from_data(data: str) -> tuple[Optional[str], Optional[str]]:
     if not data:
         return username, password
     
-    # Try to parse as query string format (key=value&key=value)
+    # Try to parse as query string format 
     try:
         parts = data.split('&')
         for part in parts:
